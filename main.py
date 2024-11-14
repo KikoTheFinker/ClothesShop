@@ -13,3 +13,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/")
+async def Hello():
+    return {"message": "Hello Kikac!"}
