@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Date, Column, ForeignKey
+from sqlalchemy import Integer, Date, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 from app.db.database import Base
 
@@ -9,6 +9,7 @@ class Wardrobe(Base):
     wardrobe_id = Column(Integer, primary_key=True, index=True)
     price = Column(Integer, nullable=False)
     subscription_date = Column(Date, nullable=False)
+    wardrobe_name = Column(String(50), nullable=False)
 
     user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
 
