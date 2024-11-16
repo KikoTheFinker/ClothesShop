@@ -21,6 +21,7 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
+    user_id: int
     name: str | None = None
     surname: str | None = None
     email: EmailStr | None = None
