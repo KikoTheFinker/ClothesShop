@@ -13,3 +13,10 @@ def raise_incorrect_credentials():
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect credentials"
     )
+
+
+def raise_not_found(message):
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"{message}"
+    )
