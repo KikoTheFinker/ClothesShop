@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from .. import models, schemas
 from app.core.security import hash_password, verify_password
 from fastapi import HTTPException, status
-from app.core.exeptions import raise_user_not_found, raise_incorrect_credentials
+from app.core.exceptions import raise_user_not_found, raise_incorrect_credentials
 
 
 def create_user(db: Session, user: schemas.UserCreate) -> schemas.UserResponse:
