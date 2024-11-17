@@ -8,3 +8,8 @@ class PhotoResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class PhotoCreate(BaseModel):
+    url: str
+    is_thumbnail: bool
