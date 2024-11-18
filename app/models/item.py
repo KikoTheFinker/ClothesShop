@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from app.db.database import Base
+from sqlalchemy.sql import func
 
 
 class Item(Base):
@@ -14,6 +15,8 @@ class Item(Base):
 
     category_id = Column(Integer, ForeignKey("all_categories.category_id"), nullable=False)
     wardrobe_id = Column(Integer, ForeignKey("wardrobes.wardrobe_id"), nullable=False)
+
+    creation_date = Column(DateTime, nullable=False, server_default=func.now())
 
     category = relationship("AllCategories", back_populates="items")
     wardrobe = relationship("Wardrobe", back_populates="items")
