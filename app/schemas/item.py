@@ -27,8 +27,8 @@ class ItemCreate(BaseModel):
     price: int
     is_price_fixed: bool
     is_for_rent: bool
-    category: int
-    wardrobe: int
+    category_id: int
+    wardrobe_id: int
     photos: List[PhotoCreate]
 
 
@@ -39,4 +39,4 @@ class ItemUpdate(BaseModel):
     is_for_rent: bool | None = None
     category_id: int | None = None
     wardrobe_id: int | None = None
-    photo_ids: List[int] | None = None
+    photos: List[PhotoCreate] = []
