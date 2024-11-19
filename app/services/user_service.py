@@ -2,10 +2,19 @@ from sqlalchemy.orm import Session
 from .. import models, schemas
 from app.core.security import hash_password, verify_password
 from fastapi import HTTPException, status
-from app.core.exceptions import raise_user_not_found, raise_incorrect_credentials
+from app.core.exceptions import raise_user_not_found, raise_incorrect_credentials, raise_user_already_exists
+from ..schemas import UserResponse
 
 
 def create_user(db: Session, user: schemas.UserCreate) -> schemas.UserResponse:
+    existing_user_by_email = get_user_by_email(db=db, email=user.email)
+    if existing_user_by_email:
+        raise_user_already_exists("A user with this email already exists.")
+
+    existing_user_by_phone_number = get_user_by_phone_number(db=db, phone_number=user.phone_number)
+    if existing_user_by_phone_number:
+        raise_user_already_exists("A user with this phone number already exists.")
+
     hashed_password = hash_password(user.password)
 
     db_user = models.User(
@@ -31,10 +40,10 @@ def get_user(db: Session, user_id: int) -> schemas.UserResponse:
     return schemas.UserResponse.from_orm(db_user)
 
 
-def get_user_by_email(db: Session, email: str) -> schemas.UserResponse:
+def get_user_by_email(db: Session, email: str) -> UserResponse | None:
     db_user = db.query(models.User).filter(models.User.email == email).first()
     if db_user is None:
-        raise_user_not_found()
+        return None
     return schemas.UserResponse.from_orm(db_user)
 
 
