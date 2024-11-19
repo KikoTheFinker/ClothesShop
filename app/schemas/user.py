@@ -5,7 +5,7 @@ class UserBase(BaseModel):
     name: str
     surname: str
     email: EmailStr
-    phone_number: constr(pattern=r"^\+389\d{7}$")
+    phone_number: constr(pattern=r"^\+389\d{8}$")
     city: str | None = None
     country: str
 
