@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.authentication import register
+
 app = FastAPI()
 
 origins = [
@@ -13,8 +15,4 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/")
-async def Hello():
-    return {"message": "Hello Kikac!"}
+app.include_router(register.router, prefix="/api/authentication", tags=["authentication"])

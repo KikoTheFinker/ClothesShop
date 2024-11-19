@@ -20,3 +20,10 @@ def raise_not_found(message):
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"{message}"
     )
+
+
+def raise_user_already_exists(message):
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail=f"{message}"
+    )
