@@ -1,4 +1,5 @@
 fastapi~=0.115.4
+psycopg2
 uvicorn[standard]
 pydantic[email]
 python-multipart
