@@ -8,6 +8,7 @@ from ..schemas import UserResponse
 
 def create_user(db: Session, user: schemas.UserCreate) -> schemas.UserResponse:
     existing_user_by_email = get_user_by_email(db=db, email=user.email)
+
     if existing_user_by_email:
         raise_user_already_exists("A user with this email already exists.")
 
@@ -47,10 +48,10 @@ def get_user_by_email(db: Session, email: str) -> UserResponse | None:
     return schemas.UserResponse.from_orm(db_user)
 
 
-def get_user_by_phone_number(db: Session, phone_number: str) -> schemas.UserResponse:
+def get_user_by_phone_number(db: Session, phone_number: str) -> schemas.UserResponse | None:
     db_user = db.query(models.User).filter(models.User.phone_number == phone_number).first()
     if db_user is None:
-        raise_user_not_found()
+        return None
     return schemas.UserResponse.from_orm(db_user)
 
 
