@@ -19,7 +19,7 @@ class ItemResponse(ItemBase):
     photos: List[PhotoResponse] = []
 
     class Config:
-        orm_mode = True
+        from_attributes  = True
 
 
 class ItemCreate(BaseModel):

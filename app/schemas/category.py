@@ -8,7 +8,7 @@ class Category(BaseModel):
     name: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CategoryResponse(Category):
@@ -16,7 +16,7 @@ class CategoryResponse(Category):
     children: List["CategoryResponse"] | None = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 CategoryResponse.update_forward_refs()
