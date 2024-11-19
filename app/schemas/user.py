@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, constr
+from pydantic import BaseModel, EmailStr, constr, Field
 
 
 class UserBase(BaseModel):
@@ -10,31 +10,31 @@ class UserBase(BaseModel):
     country: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserCreate(UserBase):
     password: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserUpdate(UserBase):
-    user_id: int
+    user_id: int = Field(alias="id")
     name: str | None = None
     surname: str | None = None
     email: EmailStr | None = None
-    phone_number: constr(pattern=r"^\+389\d{7}$") | None = None
+    phone_number: constr(pattern=r"^\+389\d{8}$") | None = None
     city: str | None = None
     country: str | None = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserResponse(UserBase):
-    user_id: int
+    user_id: int = Field(..., alias='id')
 
     class Config:
-        orm_mode = True
+        from_attributes = True
