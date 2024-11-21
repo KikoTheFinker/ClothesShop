@@ -1,12 +1,11 @@
-from sqlalchemy.orm import Session
-from .. import models, schemas
-from app.core.security import hash_password, verify_password
 from fastapi import HTTPException, status
+from sqlalchemy.orm import Session
 from app.core.exceptions import raise_user_not_found, raise_incorrect_credentials, raise_user_already_exists
-from ..schemas import UserResponse
+from app.core.security import hash_password, verify_password
+from .. import models, schemas
 
 
-def create_user(db: Session, user: schemas.UserCreate) -> schemas.UserResponse:
+def create_user(db: Session, user: schemas.UserCreate) -> dict:
     existing_user_by_email = get_user_by_email(db=db, email=user.email)
 
     if existing_user_by_email:
@@ -31,7 +30,7 @@ def create_user(db: Session, user: schemas.UserCreate) -> schemas.UserResponse:
     db.commit()
     db.refresh(db_user)
 
-    return schemas.UserResponse.from_orm(db_user)
+    return {"message": "user created successfully"}
 
 
 def get_user(db: Session, user_id: int) -> schemas.UserResponse:
@@ -41,18 +40,12 @@ def get_user(db: Session, user_id: int) -> schemas.UserResponse:
     return schemas.UserResponse.from_orm(db_user)
 
 
-def get_user_by_email(db: Session, email: str) -> UserResponse | None:
-    db_user = db.query(models.User).filter(models.User.email == email).first()
-    if db_user is None:
-        return None
-    return schemas.UserResponse.from_orm(db_user)
+def get_user_by_email(db: Session, email: str) -> models.User | None:
+    return db.query(models.User).filter(models.User.email == email).first()
 
 
-def get_user_by_phone_number(db: Session, phone_number: str) -> schemas.UserResponse | None:
-    db_user = db.query(models.User).filter(models.User.phone_number == phone_number).first()
-    if db_user is None:
-        return None
-    return schemas.UserResponse.from_orm(db_user)
+def get_user_by_phone_number(db: Session, phone_number: str) -> models.User | None:
+    return db.query(models.User).filter(models.User.phone_number == phone_number).first()
 
 
 def update_user(db: Session, user_id: int, user: schemas.UserUpdate, password: str) -> schemas.UserResponse:
@@ -99,8 +92,7 @@ def delete_user(db: Session, user_id: int):
         raise_user_not_found()
 
 
-def authenticate_user(db: Session, email: str = None, phone_number: str = None,
-                      password: str = None) -> schemas.UserResponse:
+def authenticate_user(db: Session, email: str = None, phone_number: str = None, password: str = None):
     user = None
     if not email and not phone_number:
         raise_incorrect_credentials()
@@ -113,4 +105,4 @@ def authenticate_user(db: Session, email: str = None, phone_number: str = None,
     if not verify_password(password, user.password):
         raise_incorrect_credentials()
 
-    return schemas.UserResponse.from_orm(user)
+    return user
