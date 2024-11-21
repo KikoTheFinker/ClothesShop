@@ -38,3 +38,12 @@ class UserResponse(UserBase):
 
     class Config:
         from_attributes = True
+
+
+class UserLogin(BaseModel):
+    email: EmailStr | None = None
+    phone_number: constr(pattern=r"^\+389\d{8}$") | None = None
+    password: str
+
+    class Config:
+        from_attributes = True
