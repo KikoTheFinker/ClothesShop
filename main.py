@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from app.api.authentication import register
+from app.api.authentication import register, login
 
 app = FastAPI()
 
@@ -15,4 +14,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.include_router(register.router, prefix="/api/authentication", tags=["authentication"])
+app.include_router(login.router, prefix="/api/authentication", tags=["authentication"])
