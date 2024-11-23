@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.exceptions import raise_user_not_found, raise_incorrect_credentials, raise_user_already_exists
-from app.core.security import hash_password, verify_password
+from app.core.jwt.security import hash_password, verify_password
 from .. import models, schemas
 
 
@@ -45,6 +45,7 @@ def get_user_by_email(db: Session, email: str) -> models.User | None:
 
 
 def get_user_by_phone_number(db: Session, phone_number: str) -> models.User | None:
+    print(db.query(models.User).filter(models.User.phone_number == phone_number))
     return db.query(models.User).filter(models.User.phone_number == phone_number).first()
 
 
@@ -94,15 +95,13 @@ def delete_user(db: Session, user_id: int):
 
 def authenticate_user(db: Session, email: str = None, phone_number: str = None, password: str = None):
     user = None
+
     if not email and not phone_number:
         raise_incorrect_credentials()
 
-    if email:
-        user = get_user_by_email(db, email)
-    elif phone_number:
-        user = get_user_by_phone_number(db, phone_number)
+    user = get_user_by_email(db, email) if email else get_user_by_phone_number(db, phone_number)
 
-    if not verify_password(password, user.password):
+    if not user or not verify_password(password, user.password):
         raise_incorrect_credentials()
 
     return user
