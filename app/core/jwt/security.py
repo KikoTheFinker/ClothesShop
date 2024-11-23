@@ -1,8 +1,13 @@
 from datetime import datetime, timedelta, timezone
-from app.core.exceptions import jwt_invalid_or_expired
-from jose import jwt, JWTError
+from fastapi import Depends, Request, HTTPException
+from jose import jwt, JWTError, ExpiredSignatureError
 from passlib.context import CryptContext
-from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from sqlalchemy.orm import Session
+
+from app.core.exceptions import raise_jwt_invalid_or_expired, raise_user_not_found
+from app.db.database import get_db
+from app.services.user_service import get_user_by_email
+from app.core.jwt.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -18,8 +23,33 @@ def verify_access_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token has expired. Please log in again."
+        )
     except JWTError:
-        jwt_invalid_or_expired()
+        raise_jwt_invalid_or_expired()
+
+
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+    token = request.cookies.get("access_token")
+    if not token:
+        raise_jwt_invalid_or_expired()
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        if not email:
+            raise_jwt_invalid_or_expired()
+
+        user = get_user_by_email(db, email)
+        if not user:
+            raise_user_not_found()
+
+        return user
+    except JWTError:
+        raise_jwt_invalid_or_expired()
 
 
 def hash_password(password: str) -> str:
