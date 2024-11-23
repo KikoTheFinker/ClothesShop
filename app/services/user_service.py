@@ -45,7 +45,6 @@ def get_user_by_email(db: Session, email: str) -> models.User | None:
 
 
 def get_user_by_phone_number(db: Session, phone_number: str) -> models.User | None:
-    print(db.query(models.User).filter(models.User.phone_number == phone_number))
     return db.query(models.User).filter(models.User.phone_number == phone_number).first()
 
 
