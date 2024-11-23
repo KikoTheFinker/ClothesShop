@@ -27,3 +27,10 @@ def raise_user_already_exists(message):
         status_code=status.HTTP_400_BAD_REQUEST,
         detail=f"{message}"
     )
+
+
+def raise_jwt_invalid_or_expired():
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="JWT invalid or expired"
+    )
