@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 
 from app.core.exceptions import raise_jwt_invalid_or_expired, raise_user_not_found
 from app.db.database import get_db
-from app.services.user_service import get_user_by_email
 from app.core.jwt.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -42,7 +41,7 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
         email = payload.get("sub")
         if not email:
             raise_jwt_invalid_or_expired()
-
+        from app.services.user_service import get_user_by_email
         user = get_user_by_email(db, email)
         if not user:
             raise_user_not_found()
