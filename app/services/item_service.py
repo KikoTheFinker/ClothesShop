@@ -59,19 +59,19 @@ def create_item(db: Session, item: schemas.ItemCreate) -> dict:
 
 def get_all_items(db: Session) -> List[schemas.ItemResponse]:
     items = db.query(models.Item).all()
-    return [schemas.ItemResponse.from_orm(item) for item in items]
+    return [schemas.ItemResponse.model_validate(item) for item in items]
 
 
 def get_item_by_id(db: Session, item_id: int) -> schemas.ItemResponse:
     item = db.query(models.Item).filter(models.Item.item_id == item_id).first()
     if not item:
         raise_not_found("Item not found.")
-    return schemas.ItemResponse.from_orm(item)
+    return schemas.ItemResponse.model_validate(item)
 
 
 def get_items_by_wardrobe_id(db: Session, wardrobe_id: int) -> List[schemas.ItemResponse]:
     items = db.query(models.Item).filter(models.Item.wardrobe_id == wardrobe_id).all()
-    return [schemas.ItemResponse.from_orm(item) for item in items]
+    return [schemas.ItemResponse.model_validate(item) for item in items]
 
 
 def get_filtered_items(
@@ -106,7 +106,7 @@ def get_filtered_items(
     if not items:
         raise_not_found("No items found matching the given criteria.")
 
-    return [schemas.ItemResponse.from_orm(item) for item in items]
+    return [schemas.ItemResponse.model_validate(item) for item in items]
 
 
 def delete_item(db: Session, item_id: int) -> dict:

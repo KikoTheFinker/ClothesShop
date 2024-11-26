@@ -37,7 +37,7 @@ def get_user(db: Session, user_id: int) -> schemas.UserResponse:
     db_user = db.query(models.User).filter(models.User.id == user_id).first()
     if db_user is None:
         raise_user_not_found()
-    return schemas.UserResponse.from_orm(db_user)
+    return schemas.UserResponse.model_validate(db_user)
 
 
 def get_user_by_email(db: Session, email: str) -> models.User | None:
@@ -79,7 +79,7 @@ def update_user(db: Session, user_id: int, user: schemas.UserUpdate, password: s
     db.commit()
     db.refresh(db_user)
 
-    return schemas.UserResponse.from_orm(db_user)
+    return schemas.UserResponse.model_validate(db_user)
 
 
 def delete_user(db: Session, user_id: int):
