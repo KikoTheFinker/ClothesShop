@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+
 from app.core.exceptions import raise_user_not_found, raise_incorrect_credentials, raise_user_already_exists
 from app.core.jwt.security import hash_password, verify_password
 from .. import models, schemas
@@ -93,8 +94,6 @@ def delete_user(db: Session, user_id: int):
 
 
 def authenticate_user(db: Session, email: str = None, phone_number: str = None, password: str = None):
-    user = None
-
     if not email and not phone_number:
         raise_incorrect_credentials()
 
