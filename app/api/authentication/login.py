@@ -22,7 +22,7 @@ async def login_user(response: Response, login_data: UserLogin, db: Session = De
         key='access_token',
         value=access_token,
         httponly=True,
-        secure=True,
+        secure=False,
         samesite='lax',
         expires=3600
     )
