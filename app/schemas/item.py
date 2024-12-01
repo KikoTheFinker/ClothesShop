@@ -16,7 +16,7 @@ class ItemResponse(ItemBase):
     item_id: int
     category: CategoryResponse
     wardrobe: WardrobeResponse
-    photos: List[PhotoResponse] = []
+    photos: List[PhotoResponse]
 
     class Config:
         from_attributes  = True
@@ -39,4 +39,4 @@ class ItemUpdate(BaseModel):
     is_for_rent: bool | None = None
     category_id: int | None = None
     wardrobe_id: int | None = None
-    photos: List[PhotoCreate] = []
+    photos: List[PhotoCreate]
