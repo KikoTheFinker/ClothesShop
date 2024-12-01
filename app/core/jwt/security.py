@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta, timezone
+
 from fastapi import Depends, Request, HTTPException
 from jose import jwt, JWTError, ExpiredSignatureError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
+from app import schemas
 from app.core.exceptions import raise_jwt_invalid_or_expired, raise_user_not_found
-from app.db.database import get_db
 from app.core.jwt.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.db.database import get_db
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -45,8 +47,8 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
         user = get_user_by_email(db, email)
         if not user:
             raise_user_not_found()
-
         return user
+
     except JWTError:
         raise_jwt_invalid_or_expired()
 
