@@ -1,7 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Enum
 from sqlalchemy.orm import relationship
 from app.db.database import Base
 from sqlalchemy.sql import func
+import enum
+
+class ItemStatus(enum.Enum):
+    PENDING_REVIEW = "PENDING_REVIEW"
+    APPROVED = "APPROVED"
+    MODIFICATION_REQUIRED = "MODIFICATION_REQUIRED"
 
 
 class Item(Base):
@@ -16,6 +22,7 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey("all_categories.category_id"), nullable=False)
     wardrobe_id = Column(Integer, ForeignKey("wardrobes.wardrobe_id"), nullable=False)
 
+    status = Column(Enum(ItemStatus), nullable=False, default=ItemStatus.PENDING_REVIEW)
     creation_date = Column(DateTime, nullable=False, server_default=func.now())
 
     category = relationship("AllCategories", back_populates="items")
