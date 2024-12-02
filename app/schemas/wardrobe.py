@@ -1,9 +1,20 @@
 from pydantic import BaseModel
 
 
-class WardrobeResponse(BaseModel):
-    wardrobe_id: int
+class WardrobeBase(BaseModel):
     name: str
 
+
+class WardrobeCreate(WardrobeBase):
+    pass
+
+
+class WardrobeUpdate(WardrobeBase):
+    name: str | None = None
+
+
+class WardrobeResponse(WardrobeBase):
+    wardrobe_id: int
+
     class Config:
-        from_attributes = True
+        orm_mode = True
