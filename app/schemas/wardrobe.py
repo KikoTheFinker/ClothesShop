@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class WardrobeBase(BaseModel):
-    name: str
+    wardrobe_name: str
 
 
 class WardrobeCreate(WardrobeBase):
@@ -10,11 +10,11 @@ class WardrobeCreate(WardrobeBase):
 
 
 class WardrobeUpdate(WardrobeBase):
-    name: str | None = None
+    wardrobe_name: str | None = None
 
 
 class WardrobeResponse(WardrobeBase):
     wardrobe_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
