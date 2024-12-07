@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.authentication import routers as auth_routers
+from app.api.wardrobe import routers as wardrobe_routers
 
 app = FastAPI()
 
@@ -16,4 +17,7 @@ app.add_middleware(
 )
 
 for router, prefix, tags in auth_routers:
+    app.include_router(router, prefix=prefix, tags=tags)
+
+for router, prefix, tags in wardrobe_routers:
     app.include_router(router, prefix=prefix, tags=tags)
