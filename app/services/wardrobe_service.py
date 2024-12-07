@@ -1,22 +1,26 @@
 from datetime import date
+from typing import List
+from ..core.exceptions import raise_wardrobe_conflict
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from .. import models, schemas
+from app.models import Wardrobe
 
 
 ADMIN_EMAIL = "test.test@gmail.com"
 def create_wardrobe(db:Session, wardrobe:schemas.WardrobeCreate, user_id: int) -> dict:
-
-    existing_wardrobe = db.query(models.Wardrobe).filter(models.Wardrobe.user_id == user_id).first()
+    existing_wardrobe = db.query(Wardrobe).filter(Wardrobe.user_id == user_id).first()
     if existing_wardrobe:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="A wardrobe for this user already exists."
-        )
-    db_wardrobe = models.Wardrobe(
-        price=wardrobe.price,
+       raise raise_wardrobe_conflict("A wardrobe for this user already exists.")
+
+    existing_wardrobe_name = db.query(Wardrobe).filter(Wardrobe.wardrobe_name == wardrobe.wardrobe_name).first()
+    if existing_wardrobe_name:
+        raise_wardrobe_conflict(f"A wardrobe with the name '{wardrobe.wardrobe_name}' already exists.")
+
+    db_wardrobe = Wardrobe(
+        price=200,
         subscription_date=date.today(),
-        wardrobe_name=wardrobe.name,
+        wardrobe_name=wardrobe.wardrobe_name,
         user_id=user_id,
     )
     db.add(db_wardrobe)
@@ -25,3 +29,6 @@ def create_wardrobe(db:Session, wardrobe:schemas.WardrobeCreate, user_id: int) -
 
     return {"message": "Created wardrobe successfully."}
 
+def get_all_wardrobes(db: Session) -> List[schemas.WardrobeResponse]:
+    wardrobes =  db.query(Wardrobe).all()
+    return [schemas.WardrobeResponse.model_validate(wardrobe) for wardrobe in wardrobes]
