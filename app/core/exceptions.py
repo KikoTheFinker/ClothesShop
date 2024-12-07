@@ -32,5 +32,11 @@ def raise_user_already_exists(message):
 def raise_jwt_invalid_or_expired():
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="JWT invalid or expired"
+        detail="Please log in"
     )
+def raise_wardrobe_conflict(message):
+    raise HTTPException(
+        status_code=status.HTTP_409_CONFLICT,
+        detail=message
+    )
+
