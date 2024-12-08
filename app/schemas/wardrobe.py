@@ -10,7 +10,7 @@ class WardrobeCreate(WardrobeBase):
 
 
 class WardrobeUpdate(WardrobeBase):
-    wardrobe_name: str | None = None
+    wardrobe_name: str
 
 
 class WardrobeResponse(WardrobeBase):
