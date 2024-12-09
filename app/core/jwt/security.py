@@ -5,7 +5,6 @@ from jose import jwt, JWTError, ExpiredSignatureError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from app import schemas
 from app.core.exceptions import raise_jwt_invalid_or_expired, raise_user_not_found
 from app.core.jwt.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.db.database import get_db
