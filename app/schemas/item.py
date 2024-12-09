@@ -1,8 +1,10 @@
-from pydantic import BaseModel
 from typing import List
+
+from pydantic import BaseModel
+
 from .category import CategoryResponse
-from .wardrobe import WardrobeResponse
 from .photo import PhotoCreate, PhotoResponse
+from .wardrobe import WardrobeResponse
 
 
 class ItemBase(BaseModel):
@@ -28,7 +30,6 @@ class ItemCreate(BaseModel):
     is_price_fixed: bool
     is_for_rent: bool
     category_id: int
-    wardrobe_id: int
     photos: List[PhotoCreate]
 
 
@@ -38,5 +39,4 @@ class ItemUpdate(BaseModel):
     is_price_fixed: bool | None = None
     is_for_rent: bool | None = None
     category_id: int | None = None
-    wardrobe_id: int | None = None
     photos: List[PhotoCreate]

@@ -18,3 +18,4 @@ class WardrobeResponse(WardrobeBase):
 
     class Config:
         from_attributes = True
+

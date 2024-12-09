@@ -12,8 +12,8 @@ class Category(BaseModel):
 
 
 class CategoryResponse(Category):
-    parents: List["CategoryResponse"] | None = []
-    children: List["CategoryResponse"] | None = []
+    parents: List["CategoryResponse"] | None
+    children: List["CategoryResponse"] | None
 
     class Config:
         from_attributes = True
