@@ -26,7 +26,7 @@ class ItemCreate(BaseModel):
     name: str
     price: int
     is_price_fixed: bool
-    is_for_rent: bool
+    is_for_rent: bool | None = None
     category_id: int
     photos: List[PhotoCreate]
 
