@@ -40,3 +40,9 @@ def raise_wardrobe_conflict(message):
         detail=message
     )
 
+
+def raise_item_exception(message):
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail=message
+    )
