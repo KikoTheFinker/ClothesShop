@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 from .category import CategoryResponse
 from .photo import PhotoCreate, PhotoResponse
-from .wardrobe import WardrobeResponse
 
 
 class ItemBase(BaseModel):
@@ -17,7 +16,6 @@ class ItemBase(BaseModel):
 class ItemResponse(ItemBase):
     item_id: int
     category: CategoryResponse
-    wardrobe: WardrobeResponse
     photos: List[PhotoResponse]
 
     class Config:
