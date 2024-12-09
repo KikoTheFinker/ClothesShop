@@ -8,7 +8,7 @@ from app.models import Wardrobe
 from .. import models, schemas
 from ..core.exceptions import raise_wardrobe_conflict
 
-ADMIN_EMAIL = "test.test@gmail.com"
+ADMIN_EMAIL = "ks@gmail.com"
 
 
 def create_wardrobe(db: Session, wardrobe: schemas.WardrobeCreate, user_id: int) -> dict:
