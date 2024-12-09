@@ -1,4 +1,8 @@
+from typing import List
+
 from pydantic import BaseModel
+
+from app.schemas import ItemResponse
 
 
 class WardrobeBase(BaseModel):
@@ -14,8 +18,13 @@ class WardrobeUpdate(WardrobeBase):
 
 
 class WardrobeResponse(WardrobeBase):
-    wardrobe_id: int
+    wardrobe_name: str
 
     class Config:
         from_attributes = True
 
+class WardrobeItemsResponse(WardrobeResponse):
+    items: List[ItemResponse]
+
+    class Config:
+        from_attributes = True

@@ -1,7 +1,9 @@
 from datetime import date
 from typing import List
-from sqlalchemy.orm import Session
+
 from sqlalchemy import func
+from sqlalchemy.orm import Session
+
 from app.models import Wardrobe
 from .. import models, schemas
 from ..core.exceptions import raise_wardrobe_conflict
@@ -64,3 +66,21 @@ def update_wardrobe(db: Session, wardrobe: schemas.WardrobeUpdate, user_id: int)
     db.refresh(db_wardrobe)
 
     return {"message": "Updated wardrobe successfully."}
+
+
+def get_items_in_wardrobe(db: Session, wardrobe_name: str) -> schemas.WardrobeItemsResponse:
+    from ..services.item_service import get_items_by_wardrobe_id
+
+    wardrobe = db.query(models.Wardrobe).filter(models.Wardrobe.wardrobe_name == wardrobe_name).first()
+    if not wardrobe:
+        raise raise_wardrobe_conflict("A wardrobe with this name does not exist.")
+
+    items = get_items_by_wardrobe_id(db, wardrobe.wardrobe_id)
+
+    wardrobe_response = schemas.WardrobeItemsResponse.model_validate({
+        "wardrobe_id": wardrobe.wardrobe_id,
+        "wardrobe_name": wardrobe.wardrobe_name,
+        "items": [schemas.ItemResponse.model_validate(item) for item in items],
+    })
+    return wardrobe_response
+
