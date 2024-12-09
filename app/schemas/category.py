@@ -1,6 +1,14 @@
+from enum import Enum
+
 from pydantic import BaseModel
 
-from typing import List
+
+class GenderEnum(str, Enum):
+    MEN = "MAN"
+    WOMEN = "WOMAN"
+    KID = "KID"
+    UNISEX = "UNISEX"
+    NO_GENDER = "NO-GENDER"
 
 
 class Category(BaseModel):
@@ -11,12 +19,11 @@ class Category(BaseModel):
         from_attributes = True
 
 
-class CategoryResponse(Category):
-    parents: List["CategoryResponse"] | None
-    children: List["CategoryResponse"] | None
-
+class CategoryResponse(BaseModel):
+    name: str
+    gender: GenderEnum = GenderEnum.NO_GENDER
     class Config:
         from_attributes = True
 
 
-CategoryResponse.update_forward_refs()
+CategoryResponse.model_rebuild()
