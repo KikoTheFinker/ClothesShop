@@ -3,10 +3,11 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
-
-from .wardrobe_service import get_wardrobe_by_user_id
+from .user_service import get_user
+from .wardrobe_service import get_wardrobe_by_user_id, ADMIN_EMAIL
 from .. import models, schemas
 from app.core.exceptions import raise_not_found, raise_item_exception
+
 
 
 def validate_category(db: Session, category_id: int):
@@ -24,6 +25,9 @@ def create_item(db: Session, item: schemas.ItemCreate, user_id: int) -> dict:
 
         thumbnail_count = sum(1 for photo in item.photos if photo.is_thumbnail)
 
+        user = get_user(db, user_id)
+
+
         if item.price <= 0:
             raise_item_exception("Item price must be greater than 0.")
         if thumbnail_count > 1:
@@ -35,14 +39,18 @@ def create_item(db: Session, item: schemas.ItemCreate, user_id: int) -> dict:
         if not item.category_id:
             raise_item_exception("Item category ID is required.")
 
+        if user.email != ADMIN_EMAIL and item.is_for_rent is not None:
+            raise_item_exception("Item can't be on rent.")
+
         db_item = models.Item(
             name=item.name,
             price=item.price,
             is_price_fixed=item.is_price_fixed,
-            is_for_rent=item.is_for_rent,
+            is_for_rent=item.is_for_rent if user.email == ADMIN_EMAIL else None,
             category_id=category.category_id,
             wardrobe_id=wardrobe.wardrobe_id
         )
+
         db.add(db_item)
         db.flush()
 
