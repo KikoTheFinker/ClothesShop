@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.core.jwt.security import get_db, get_current_user
 from app.schemas import WardrobeResponse
-from app.schemas.wardrobe import WardrobeCreate, WardrobeUpdate
-from app.services.wardrobe_service import create_wardrobe, get_all_wardrobes, delete_wardrobe, update_wardrobe
+from app.schemas.wardrobe import WardrobeCreate, WardrobeUpdate, WardrobeItemsResponse
+from app.services.wardrobe_service import create_wardrobe, get_all_wardrobes, delete_wardrobe, update_wardrobe, get_items_in_wardrobe
 
 router = APIRouter()
 
@@ -19,9 +19,9 @@ def create_user_wardrobe(wardrobe: WardrobeCreate, db: Session = Depends(get_db)
 def get_all_user_wardrobe(db: Session = Depends(get_db)):
     return get_all_wardrobes(db)
 
-# @router.get("/all/{wardrobe_name}", response_model=List[WardrobeItemsResponse])
-# def get_items_in_wardrobe(wardrobe_name: str, db: Session = Depends(get_db)):
-#     return get_wardrobe_items(db, wardrobe_name)
+@router.get("/{wardrobe_name}")
+def get_all_items_in_wardrobe(wardrobe_name: str, db: Session = Depends(get_db)):
+    return get_items_in_wardrobe(db, wardrobe_name)
 
 @router.delete("/delete")
 def delete_user_wardrobe(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
