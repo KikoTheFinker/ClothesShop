@@ -4,11 +4,11 @@ from pydantic import BaseModel
 
 
 class GenderEnum(str, Enum):
-    MEN = "MAN"
-    WOMEN = "WOMAN"
+    MAN = "MAN"
+    WOMAN = "WOMAN"
     KID = "KID"
     UNISEX = "UNISEX"
-    NO_GENDER = "NO-GENDER"
+    NO_GENDER = "NO_GENDER"
 
 
 class Category(BaseModel):
@@ -20,10 +20,18 @@ class Category(BaseModel):
 
 
 class CategoryResponse(BaseModel):
+    category_id: int
     name: str
     gender: GenderEnum = GenderEnum.NO_GENDER
+
     class Config:
         from_attributes = True
 
 
-CategoryResponse.model_rebuild()
+class CreateCategory(BaseModel):
+    name: str
+    gender: GenderEnum = GenderEnum.NO_GENDER
+
+    class Config:
+        from_attributes = True
+

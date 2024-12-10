@@ -1,13 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from app.db.database import Base
-
-
-class CategoryRelations(Base):
-    __tablename__ = "category_relations"
-
-    parent_category_id = Column(Integer, ForeignKey("all_categories.category_id"), primary_key=True)
-    child_category_id = Column(Integer, ForeignKey("all_categories.category_id"), primary_key=True)
+from app.schemas.category import GenderEnum
 
 
 class AllCategories(Base):
@@ -15,13 +9,7 @@ class AllCategories(Base):
 
     category_id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), nullable=False)
+    gender = Column(Enum(GenderEnum), nullable=False, default=GenderEnum.NO_GENDER.value)
 
     items = relationship("Item", back_populates="category")
 
-    parents = relationship(
-        "AllCategories",
-        secondary="category_relations",
-        primaryjoin=category_id == CategoryRelations.child_category_id,
-        secondaryjoin=category_id == CategoryRelations.parent_category_id,
-        backref="children"
-    )
