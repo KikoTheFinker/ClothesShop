@@ -14,6 +14,6 @@ async def add_category(category: CreateCategory, db: Session = Depends(get_db), 
     return add_new_category(category, db, current_user.id)
 
 
-@router.get("category/all")
+@router.get("/category/all")
 async def get_categories(db: Session = Depends(get_db)):
     return get_all_categories(db)
