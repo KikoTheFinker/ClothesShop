@@ -40,13 +40,13 @@ def create_item(db: Session, item: schemas.ItemCreate, user_id: int) -> dict:
             raise_item_exception("Item category ID is required.")
 
         if user.email != ADMIN_EMAIL and item.is_for_rent is not None:
-            raise_item_exception("Item can't be on rent.")
+            raise_item_exception("Item can't be on rent for non Admins.")
 
         db_item = models.Item(
             name=item.name,
             price=item.price,
             is_price_fixed=item.is_price_fixed,
-            is_for_rent=item.is_for_rent if user.email == ADMIN_EMAIL else None,
+            is_for_rent=item.is_for_rent if user.email == ADMIN_EMAIL else False,
             category_id=category.category_id,
             wardrobe_id=wardrobe.wardrobe_id
         )
