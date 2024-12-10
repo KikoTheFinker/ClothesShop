@@ -46,3 +46,9 @@ def raise_item_exception(message):
         status_code=status.HTTP_400_BAD_REQUEST,
         detail=message
     )
+
+def raise_forbidden(message):
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail=message
+    )
