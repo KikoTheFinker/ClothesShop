@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PhotoResponse(BaseModel):
@@ -12,4 +12,4 @@ class PhotoResponse(BaseModel):
 
 class PhotoCreate(BaseModel):
     url: str
-    is_thumbnail: bool
+    is_thumbnail: bool = False

@@ -15,6 +15,7 @@ class ItemBase(BaseModel):
 
 class ItemResponse(ItemBase):
     item_id: int
+    wardrobe_name: str | None = None
     category: CategoryResponse
     photos: List[PhotoResponse]
 
@@ -32,9 +33,13 @@ class ItemCreate(BaseModel):
 
 
 class ItemUpdate(BaseModel):
+    item_id: int
     name: str | None = None
     price: int | None = None
     is_price_fixed: bool | None = None
     is_for_rent: bool | None = None
     category_id: int | None = None
-    photos: List[PhotoCreate]
+    photos: List[PhotoCreate] | None = None
+
+    class Config:
+        from_attributes = True
