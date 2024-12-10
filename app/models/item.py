@@ -27,4 +27,4 @@ class Item(Base):
 
     category = relationship("AllCategories", back_populates="items")
     wardrobe = relationship("Wardrobe", back_populates="items")
-    photos = relationship("Photo", back_populates="item")
+    photos = relationship("Photo", back_populates="item", cascade="all, delete-orphan")
