@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.core.exceptions import raise_not_found, raise_item_exception
-from app.services.wardrobe_service import ADMIN_EMAIL
+from app.core.jwt.config import ADMIN_EMAIL
 
 
 def validate_category(db: Session, category_id: int):
@@ -20,6 +20,7 @@ def validate_photos(photos: List[schemas.PhotoCreate]):
         raise_item_exception("Only one photo can be marked as a thumbnail.")
     if thumbnail_count == 0:
         raise_item_exception("At least one photo must be marked as a thumbnail.")
+
 
 def is_url_unique(db: Session, url: str) -> bool:
     return not db.query(models.Photo).filter(models.Photo.url == url).first()

@@ -5,6 +5,7 @@ from app.api.wardrobe import routers as wardrobe_routers
 from app.api.item import routers as item_routers
 from app.api.category import routers as category_routers
 from app.api.photo import routers as photos_routers
+from app.api.admin import routers as admin_routers
 
 app = FastAPI()
 
@@ -19,17 +20,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for router, prefix, tags in auth_routers:
-    app.include_router(router, prefix=prefix, tags=tags)
+router_groups = [
+    auth_routers,
+    wardrobe_routers,
+    item_routers,
+    category_routers,
+    photos_routers,
+    admin_routers,
+]
 
-for router, prefix, tags in wardrobe_routers:
-    app.include_router(router, prefix=prefix, tags=tags)
-
-for router, prefix, tags in item_routers:
-    app.include_router(router, prefix=prefix, tags=tags)
-
-for route, prefix, tags in category_routers:
-    app.include_router(route, prefix=prefix, tags=tags)
-
-for router, prefix, tags in photos_routers:
-    app.include_router(router, prefix=prefix, tags=tags)
+for routers in router_groups:
+    for router, prefix, tags in routers:
+        app.include_router(router, prefix=prefix, tags=tags)

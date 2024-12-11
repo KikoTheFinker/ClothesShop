@@ -14,4 +14,4 @@ class Wardrobe(Base):
     user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
 
     owner = relationship("User", back_populates="wardrobe", uselist=False)
-    items = relationship("Item", back_populates="wardrobe")
+    items = relationship("Item", back_populates="wardrobe", cascade="all, delete-orphan")

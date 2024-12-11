@@ -8,9 +8,6 @@ from app.models import Wardrobe
 from .. import models, schemas
 from ..core.exceptions import raise_wardrobe_conflict
 
-ADMIN_EMAIL = "ks@gmail.com"
-
-
 def create_wardrobe(db: Session, wardrobe: schemas.WardrobeCreate, user_id: int) -> dict:
     existing_wardrobe = get_wardrobe_by_user_id(db, user_id)
     if existing_wardrobe:
@@ -37,7 +34,6 @@ def create_wardrobe(db: Session, wardrobe: schemas.WardrobeCreate, user_id: int)
 def get_all_wardrobes(db: Session) -> List[schemas.WardrobeResponse]:
     wardrobes = db.query(Wardrobe).all()
     return [schemas.WardrobeResponse.model_validate(wardrobe) for wardrobe in wardrobes]
-
 
 def get_wardrobe_by_user_id(db: Session, user_id: int) -> models.Wardrobe:
    return db.query(Wardrobe).filter(Wardrobe.user_id == user_id).first()

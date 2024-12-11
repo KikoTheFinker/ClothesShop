@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Enum
-from sqlalchemy.orm import relationship
-from app.db.database import Base
-from sqlalchemy.sql import func
 import enum
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, Enum
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from app.db.database import Base
+
 
 class ItemStatus(enum.Enum):
     PENDING_REVIEW = "PENDING_REVIEW"
@@ -20,10 +21,10 @@ class Item(Base):
     is_for_rent = Column(Boolean, nullable=False)
 
     category_id = Column(Integer, ForeignKey("all_categories.category_id"), nullable=False)
-    wardrobe_id = Column(Integer, ForeignKey("wardrobes.wardrobe_id"), nullable=False)
+    wardrobe_id = Column(Integer, ForeignKey("wardrobes.wardrobe_id", ondelete="CASCADE"), nullable=False)
 
     status = Column(Enum(ItemStatus), nullable=False, default=ItemStatus.PENDING_REVIEW)
-    creation_date = Column(DateTime, nullable=False, server_default=func.now())
+    creation_date = Column(Date, nullable=False, server_default=func.now())
 
     category = relationship("AllCategories", back_populates="items")
     wardrobe = relationship("Wardrobe", back_populates="items")

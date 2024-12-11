@@ -1,9 +1,11 @@
+from datetime import date
 from typing import List
 
 from pydantic import BaseModel
 
 from .category import CategoryResponse
 from .photo import PhotoCreate, PhotoResponse
+from ..models.item import ItemStatus
 
 
 class ItemBase(BaseModel):
@@ -16,12 +18,14 @@ class ItemBase(BaseModel):
 class ItemResponse(ItemBase):
     item_id: int
     wardrobe_name: str | None = None
+    creation_date: date
+    status: ItemStatus
     category: CategoryResponse
     photos: List[PhotoResponse]
 
     class Config:
+        arbitrary_types_allowed = True
         from_attributes  = True
-
 
 class ItemCreate(BaseModel):
     name: str
@@ -39,6 +43,7 @@ class ItemUpdate(BaseModel):
     is_price_fixed: bool | None = None
     is_for_rent: bool | None = None
     category_id: int | None = None
+    status: ItemStatus = ItemStatus.PENDING_REVIEW
     photos: List[PhotoCreate] | None = None
 
     class Config:
