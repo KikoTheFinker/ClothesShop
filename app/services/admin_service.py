@@ -17,6 +17,7 @@ def check_admin(user_email: str):
     if user_email != ADMIN_EMAIL:
         raise raise_forbidden("Only admin")
 
+
 def add_new_category(category: CreateCategory, db: Session, user_id: int) -> dict:
     user = get_user(db, user_id)
     check_admin(user.email)
@@ -62,6 +63,7 @@ def get_pending_items(db: Session, user_email: str) -> List[schemas.ItemResponse
         for item in items
     ]
 
+
 def delete_item_as_admin(db: Session, item_id: int, user_email: str) -> dict:
     check_admin(user_email)
     item = get_raw_item_by_id(db, item_id)
@@ -74,6 +76,7 @@ def delete_item_as_admin(db: Session, item_id: int, user_email: str) -> dict:
 
     return {"Message": "item was successfully deleted."}
 
+
 def delete_wardrobe_as_admin(db: Session, wardrobe_name: str, user_email: str) -> dict:
     check_admin(user_email)
     wardrobe = db.query(models.Wardrobe).filter(models.Wardrobe.wardrobe_name == wardrobe_name).first()
@@ -85,6 +88,7 @@ def delete_wardrobe_as_admin(db: Session, wardrobe_name: str, user_email: str) -
     db.commit()
 
     return {"Message": "item was successfully deleted."}
+
 
 def approve_pending_item(db: Session, user_email: str, item_id: int) -> dict:
     check_admin(user_email)

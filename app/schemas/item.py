@@ -25,7 +25,12 @@ class ItemResponse(ItemBase):
 
     class Config:
         arbitrary_types_allowed = True
-        from_attributes  = True
+        from_attributes = True
+
+
+class ItemResponseWithComment(ItemResponse):
+    comment: str | None = None
+
 
 class ItemCreate(BaseModel):
     name: str

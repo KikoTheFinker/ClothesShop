@@ -31,8 +31,6 @@ def create_item(db: Session, item: schemas.ItemCreate, user_id: int) -> dict:
 
         validate_photos(item.photos)
 
-
-
         for photo in item.photos:
             if not is_url_unique(db, photo.url):
                 raise_item_exception(f"The URL '{photo.url}' is already in use.")
@@ -50,7 +48,7 @@ def create_item(db: Session, item: schemas.ItemCreate, user_id: int) -> dict:
             is_for_rent=item.is_for_rent if user.email == ADMIN_EMAIL else False,
             category_id=category.category_id,
             wardrobe_id=wardrobe.wardrobe_id,
-            status = item_status
+            status=item_status
         )
 
         db.add(db_item)
@@ -114,7 +112,8 @@ def get_item_by_id(db: Session, item_id: int) -> schemas.ItemResponse:
 
 
 def get_items_by_wardrobe_id(db: Session, wardrobe_id: int) -> List[schemas.ItemResponse]:
-    items = db.query(models.Item).filter(models.Item.wardrobe_id == wardrobe_id).filter(models.Item.status == models.ItemStatus.APPROVED).all()
+    items = db.query(models.Item).filter(models.Item.wardrobe_id == wardrobe_id).filter(
+        models.Item.status == models.ItemStatus.APPROVED).all()
     return [schemas.ItemResponse.model_validate(item) for item in items]
 
 
@@ -127,7 +126,6 @@ def get_filtered_items(
         ascending: bool | None = None,
         search_term: str | None = None,
 ) -> List[schemas.ItemResponse]:
-
     query = (
         db.query(models.Item, models.Wardrobe.wardrobe_name.label("wardrobe_name"))
         .join(models.Wardrobe, models.Item.wardrobe_id == models.Wardrobe.wardrobe_id)
@@ -196,15 +194,28 @@ def delete_item(db: Session, item_id: int, user_id: int) -> dict:
 
     return {"message": "Item deleted successfully."}
 
-def get_all(db: Session, user_id: int) -> List[schemas.ItemResponse]:
-    items = (
-        db.query(models.Item)
+
+def get_all(db: Session, user_id: int) -> List[schemas.ItemResponseWithComment]:
+    items_with_comments = (
+        db.query(
+            models.Item,
+            models.ItemReview.comment.label("comment")
+        )
         .join(models.Wardrobe, models.Item.wardrobe_id == models.Wardrobe.wardrobe_id)
+        .outerjoin(models.ItemReview, models.Item.item_id == models.ItemReview.item_id)
         .filter(models.Wardrobe.user_id == user_id)
         .all()
     )
-    return [schemas.ItemResponse.model_validate(item) for item in items]
 
+    return [
+        schemas.ItemResponseWithComment(
+            **item.Item.__dict__,
+            category=item.Item.category,
+            photos=item.Item.photos,
+            comment=item.comment
+        )
+        for item in items_with_comments
+    ]
 
 
 def update_item(db: Session, user_id: int, update_data: schemas.ItemUpdate) -> dict:
@@ -222,7 +233,6 @@ def update_item(db: Session, user_id: int, update_data: schemas.ItemUpdate) -> d
 
     item.status = models.ItemStatus.PENDING_REVIEW
 
-
     for key, value in update_data.model_dump(exclude_unset=True).items():
         if key not in ["item_id", "photos", "status"]:
             setattr(item, key, value)
@@ -230,7 +240,7 @@ def update_item(db: Session, user_id: int, update_data: schemas.ItemUpdate) -> d
     if update_data.photos:
         existing_photo_count = db.query(models.Photo).filter(models.Photo.item_id == item.item_id).count()
         if len(item.photos) + existing_photo_count > 3:
-             raise_item_exception("An item can have a maximum of 3 photos.")
+            raise_item_exception("An item can have a maximum of 3 photos.")
         for photo in update_data.photos:
             if photo.is_thumbnail:
                 raise_item_exception(
@@ -256,4 +266,3 @@ def update_item(db: Session, user_id: int, update_data: schemas.ItemUpdate) -> d
     db.refresh(item)
 
     return {"message": "Item updated successfully."}
-

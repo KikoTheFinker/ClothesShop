@@ -39,3 +39,5 @@ async def delete_item(item_id: int, db: Session = Depends(get_db),current_user=D
 @router.delete("/wardrobe/delete/{wardrobe_name}")
 async def delete_item(wardrobe_name: str, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
     return delete_wardrobe_as_admin(db, wardrobe_name, current_user.email)
+
+

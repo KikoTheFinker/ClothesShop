@@ -6,6 +6,7 @@ from app.api.item import routers as item_routers
 from app.api.category import routers as category_routers
 from app.api.photo import routers as photos_routers
 from app.api.admin import routers as admin_routers
+from app.api.user import routers as user_routers
 
 app = FastAPI()
 
@@ -27,6 +28,7 @@ router_groups = [
     category_routers,
     photos_routers,
     admin_routers,
+    user_routers
 ]
 
 for routers in router_groups:

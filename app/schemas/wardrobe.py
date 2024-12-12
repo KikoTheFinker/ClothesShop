@@ -23,7 +23,9 @@ class WardrobeResponse(WardrobeBase):
     class Config:
         from_attributes = True
 
+
 class WardrobeItemsResponse(WardrobeResponse):
+    user_id: int
     items: List[ItemResponse]
 
     class Config:
