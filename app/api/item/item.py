@@ -37,7 +37,7 @@ async def get_filtered_items_route(
     )
 
 @router.get("/user/wardrobe/items")
-def get_items_needing_attention(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+def get_items_needing_attention(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
     return get_all(db, current_user.id)
 
 @router.post("/user/wardrobe/items/add-item")
