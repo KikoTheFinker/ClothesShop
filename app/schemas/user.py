@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, constr, Field
+from pydantic import BaseModel, EmailStr, Field, constr
 
 
 class BaseConfig:
@@ -6,19 +6,19 @@ class BaseConfig:
 
 
 class UserBase(BaseModel):
-    name: str
-    surname: str
+    name: constr(min_length=2)
+    surname: constr(min_length=2)
     email: EmailStr
-    phone_number: constr(pattern=r"^\+389\d{8}$")
-    city: str | None = None
-    country: str
+    phone_number: constr(pattern=r"^\+[1-9]\d{7,14}$",  strip_whitespace=True)
+    city: constr(min_length=2) | None = None
+    country: constr(min_length=2)
 
     class Config(BaseConfig):
         pass
 
 
 class UserCreate(UserBase):
-    password: str
+    password: str = Field(..., min_length=8)
 
     class Config(BaseConfig):
         pass
@@ -29,7 +29,7 @@ class UserUpdate(BaseModel):
     name: str | None = None
     surname: str | None = None
     email: EmailStr | None = None
-    phone_number: constr(pattern=r"^\+389\d{8}$") | None = None
+    phone_number: str | None = None
     city: str | None = None
     country: str | None = None
 
@@ -38,7 +38,7 @@ class UserUpdate(BaseModel):
 
 
 class UserResponse(UserBase):
-    user_id: int = Field(..., alias='id')
+    user_id: int = Field(..., alias="id")
 
     class Config(BaseConfig):
         pass
@@ -46,7 +46,7 @@ class UserResponse(UserBase):
 
 class UserLogin(BaseModel):
     email: EmailStr | None = None
-    phone_number: constr(pattern=r"^\+389\d{8}$") | None = None
+    phone_number: str | None = None
     password: str
 
     class Config(BaseConfig):
